@@ -1,0 +1,15 @@
+services:
+  - name: nuxt-app
+    type: web
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+
+  - name: socket-io
+    type: web
+    env: node
+    buildCommand: node -v
+    startCommand: node -v
+    routes:
+      - path: /socket
+        destination: socket-io:4000

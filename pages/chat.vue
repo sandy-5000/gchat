@@ -2,8 +2,16 @@
   <div class=" p-0 m-0 h-screen bg-gray-900">
     <div class="h-[60px] px-3 py-2">
       <div class="h-full bg-gray-800 border-2 border-gray-700 hover:border-indigo-300 rounded-lg flex flex-col justify-center">
-        <h1 class="text-lg font-semibold text-gray-300 text-center cursor-pointer">G-chat!
-        </h1>
+        <div class="flex px-10">
+          <div class="mx-auto">
+            <h1 class="text-lg font-semibold text-gray-300 text-center cursor-pointer">G-chat!
+            </h1>
+          </div>
+          <div class="flex flex-col justify-center">
+            <h1 class="text-sm font-semibold text-indigo-200 text-center cursor-pointer">Online: {{ online }}
+            </h1>
+          </div>
+        </div>
       </div>
     </div>
     <div style="height: calc(100% - 125px);" class="px-3 py-1 rounded-xl overflow-y-scroll">
@@ -28,15 +36,17 @@
 import io from 'socket.io-client'
 
 const messageBox = ref('')
-const socket = io('http://localhost:4000')
+const socket = io('/socket')
 
 const id = `${Date.now()}-${Math.floor(Math.random() * 10000)}`
 
 const messages = useState('messages', () => [])
+const online = useState('online', () => 0)
 
 socket.emit('connected', `Hello from ${id}`)
-socket.on('server-reply', (data) => {
-  console.log(data)
+
+socket.on('online', (data) => {
+  online.value = data.count
 })
 
 socket.on('broadcast', (data) => {

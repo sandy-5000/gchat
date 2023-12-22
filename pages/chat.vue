@@ -25,9 +25,14 @@
 </template>
 <script setup>
 const message = ref('')
+const socket = useRuntimeConfig().socket
 
 const handleChatSubmit = () => {
   console.log(message.value)
+  socket.emit('my-event', message.value)
+  socket.on('server-event', (data) => {
+    console.log(data)
+  })
   message.value = ''
 }
 </script>

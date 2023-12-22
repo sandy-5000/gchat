@@ -1,15 +1,11 @@
 services:
-  - name: nuxt-app
+  - name: gchat
     type: web
     env: node
     buildCommand: npm install && npm run build
     startCommand: npm start
-
-  - name: socket-io
-    type: web
-    env: node
-    buildCommand: node -v
-    startCommand: node -v
     routes:
+      - path: /
+        destination: gchat:3000
       - path: /socket
-        destination: socket-io:4000
+        destination: gchat:4000

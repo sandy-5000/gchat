@@ -1,7 +1,8 @@
 <template>
   <div class=" p-0 m-0 h-screen bg-gray-900">
     <div class="h-[60px] px-3 py-2">
-      <div class="h-full bg-gray-800 border-2 border-gray-700 hover:border-indigo-300 rounded-lg flex flex-col justify-center">
+      <div
+        class="h-full bg-gray-800 border-2 border-gray-700 hover:border-indigo-300 rounded-lg flex flex-col justify-center">
         <div class="flex px-10">
           <div class="mx-auto">
             <h1 class="text-lg font-semibold text-gray-300 text-center cursor-pointer">G-chat!
@@ -35,8 +36,9 @@
 <script setup>
 import io from 'socket.io-client'
 
-const messageBox = ref('')
-const socket = io('/socket')
+const socket = io({
+  path: '/api/socket.io/',
+})
 
 const id = `${Date.now()}-${Math.floor(Math.random() * 10000)}`
 
@@ -56,10 +58,11 @@ socket.on('broadcast', (data) => {
   messages.value.push(data.message)
 })
 
+const messageBox = ref('')
+
 const handleChatSubmit = () => {
   socket.emit('message', {
-    id: id,
-    message: messageBox.value
+    message: messageBox.value,
   })
   messageBox.value = ''
 }

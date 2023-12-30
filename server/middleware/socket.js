@@ -1,24 +1,26 @@
-import { createServer } from 'http'
 import { Server } from 'socket.io'
 
-export default defineNitroPlugin((nitro) => {
-    const httpServer = createServer()
-
-    const metaData = {
-        count: 0
+export default defineEventHandler(event => {
+    if (globalThis.io) {
+        return
     }
-
-    const io = new Server(httpServer, {
+    const server = event.node.res.socket?.server
+    const io = new Server(server, {
+        path: '/api/socket.io/',
         cors: {
             origin: "*",
         },
     })
-    
+    const metaData = {
+        count: 0
+    }
+    globalThis.io = io
     io.on('connection', (socket) => {
         console.log(socket.id + ' : connection')
         socket.on('connected', (data) => {
             console.log(data)
             metaData.count += 1
+            console.log('count', metaData.count)
             io.emit('online', metaData)
         })
         socket.on('message', (data) => {
@@ -29,9 +31,5 @@ export default defineNitroPlugin((nitro) => {
             io.emit('online', metaData)
             console.log(socket.id + " : disconnected")
         })
-    })
-
-    io.listen(4000, () => {
-        console.log('Socket on 4000')
     })
 })
